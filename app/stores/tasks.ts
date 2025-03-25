@@ -63,6 +63,28 @@ export const useTasksStore = defineStore("tasks", () => {
     return sortedTasks.slice(start, end);
   });
 
+  const totalTasks = computed(() => tasks.value.length);
+
+  const inProgressTasks = computed(
+    () => tasks.value.filter((task) => task.status === "in-progress").length
+  );
+
+  const completedTasks = computed(
+    () => tasks.value.filter((task) => task.status === "completed").length
+  );
+
+  const overdueTasks = computed(() => {
+    const today = new Date();
+    return tasks.value.filter((task) => {
+      const dueDate = new Date(task.dueDate);
+      return (
+        dueDate < today &&
+        task.status !== "completed" &&
+        task.status !== "cancelled"
+      );
+    }).length;
+  });
+
   function updatePage(newPage: number) {
     page.value = newPage;
   }
@@ -95,5 +117,9 @@ export const useTasksStore = defineStore("tasks", () => {
     updateSort,
     updateItemsPerPage,
     addTask,
+    totalTasks,
+    inProgressTasks,
+    completedTasks,
+    overdueTasks,
   };
 });

@@ -9,64 +9,7 @@
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold">Total Tasks</h3>
-            <UIcon name="i-heroicons-clipboard-document-list" class="w-5 h-5" />
-          </div>
-        </template>
-        <p class="text-3xl font-bold">{{ dashboardData.totalTasks }}</p>
-        <p class="text-sm text-gray-500">
-          <span class="text-emerald-500"
-            >↑ {{ dashboardData.taskIncrease }}%</span
-          >
-          vs last week
-        </p>
-      </UCard>
-
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold">In Progress</h3>
-            <UIcon name="i-heroicons-clock" class="w-5 h-5" />
-          </div>
-        </template>
-        <p class="text-3xl font-bold">{{ dashboardData.inProgress }}</p>
-        <p class="text-sm text-gray-500">Tasks being worked on</p>
-      </UCard>
-
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold">Completed Today</h3>
-            <UIcon name="i-heroicons-check-circle" class="w-5 h-5" />
-          </div>
-        </template>
-        <p class="text-3xl font-bold">{{ dashboardData.completedToday }}</p>
-        <p class="text-sm text-gray-500">
-          <span class="text-emerald-500"
-            >↑ {{ dashboardData.completionRate }}%</span
-          >
-          completion rate
-        </p>
-      </UCard>
-
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold">Overdue</h3>
-            <UIcon
-              name="i-heroicons-exclamation-circle"
-              class="w-5 h-5 text-red-500"
-            />
-          </div>
-        </template>
-        <p class="text-3xl font-bold">{{ dashboardData.overdueTasks }}</p>
-        <p class="text-sm text-gray-500">Tasks past due date</p>
-      </UCard>
-    </div>
+    <DynamicCards />
 
     <TasksTable />
   </div>

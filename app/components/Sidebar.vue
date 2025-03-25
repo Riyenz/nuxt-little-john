@@ -2,14 +2,24 @@
   <Transition name="slide">
     <aside
       v-show="navigation.isSidebarOpen || !isMobile"
-      class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gray-100 dark:bg-gray-800 transform lg:transform-none transition-transform duration-300"
+      class="fixed lg:static flex flex-col py-4 inset-y-0 left-0 z-50 w-64 bg-gray-100 dark:bg-gray-800 transform lg:transform-none transition-transform duration-300"
     >
-      <div class="p-4">
+      <div class="px-4">
         <h1 class="text-xl font-bold">Little John</h1>
       </div>
       <nav class="mt-4 px-2">
         <UNavigationMenu :items="menuItems" orientation="vertical" />
       </nav>
+      <div class="mt-auto px-4">
+        <UButton
+          block
+          color="neutral"
+          variant="outline"
+          icon="i-heroicons-arrow-left-on-rectangle"
+          @click="logout"
+          >Logout</UButton
+        >
+      </div>
     </aside>
   </Transition>
 </template>
@@ -72,11 +82,6 @@ const menuItems = [
       label: "User Settings",
       icon: "i-heroicons-cog-6-tooth",
       to: "/settings",
-    },
-    {
-      label: "Logout",
-      icon: "i-heroicons-arrow-left-on-rectangle",
-      click: logout,
     },
   ],
 ];

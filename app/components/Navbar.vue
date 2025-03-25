@@ -1,6 +1,8 @@
 <template>
   <header class="bg-white dark:bg-gray-900 shadow px-6 py-4">
-    <div class="flex items-center justify-between flex-row-reverse lg:flex-row">
+    <div
+      class="flex items-center justify-between flex-row-reverse lg:flex-row lg:justify-end"
+    >
       <button
         class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         @click="navigation.toggleSidebar"
@@ -15,23 +17,21 @@
         />
       </button>
       <div class="flex items-center space-x-4">
-        <UDropdown :items="profileItems">
-          <div class="flex items-center gap-2">
-            <img
-              v-if="user?.photoURL"
-              :src="user.photoURL"
-              :alt="user?.displayName || 'User profile'"
-              class="w-8 h-8 rounded-full object-cover"
-            />
-            <div
-              v-else
-              class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"
-            >
-              <UIcon name="i-heroicons-user" class="w-5 h-5 text-gray-500" />
-            </div>
-            <span class="text-sm">{{ user?.displayName || "Guest" }}</span>
+        <div class="flex items-center gap-2">
+          <img
+            v-if="user?.photoURL"
+            :src="user.photoURL"
+            alt="DP"
+            class="w-8 h-8 rounded-full object-cover bg-gray-200"
+          />
+          <div
+            v-else
+            class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"
+          >
+            <UIcon name="i-heroicons-user" class="w-5 h-5 text-gray-500" />
           </div>
-        </UDropdown>
+          <span class="text-sm">{{ user?.displayName || "Guest" }}</span>
+        </div>
       </div>
     </div>
   </header>
