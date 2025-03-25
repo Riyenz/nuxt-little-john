@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <Navbar />
-    <div class="flex">
-      <Sidebar />
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+    <Sidebar />
+    <div class="flex flex-col w-full">
+      <Navbar />
       <Transition name="fade">
         <div
           v-if="navigation.isSidebarOpen"

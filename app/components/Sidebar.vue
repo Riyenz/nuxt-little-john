@@ -2,7 +2,7 @@
   <Transition name="slide">
     <aside
       v-show="navigation.isSidebarOpen || !isMobile"
-      class="fixed lg:static flex flex-col py-4 inset-y-0 left-0 z-50 w-64 bg-gray-100 dark:bg-gray-800 transform lg:transform-none transition-transform duration-300"
+      class="fixed lg:sticky h-dvh top-0 flex flex-col py-6 z-50 w-64 shrink-0 bg-gray-100 dark:bg-gray-800 transform lg:transform-none transition-transform duration-300"
     >
       <div class="px-4">
         <h1 class="text-xl font-bold">Little John</h1>
@@ -17,8 +17,9 @@
           variant="outline"
           icon="i-heroicons-arrow-left-on-rectangle"
           @click="logout"
-          >Logout</UButton
         >
+          Logout
+        </UButton>
       </div>
     </aside>
   </Transition>
