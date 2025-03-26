@@ -3,9 +3,12 @@
     <template #header>
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-semibold">Tasks</h3>
-        <TaskFormModal @task-created="pagination.pageIndex = 0">
+        <LazyTaskFormModal
+          key="create-task"
+          @task-created="pagination.pageIndex = 0"
+        >
           <UButton icon="i-heroicons-plus" label="Add New Task" />
-        </TaskFormModal>
+        </LazyTaskFormModal>
       </div>
     </template>
 
@@ -62,6 +65,31 @@
             variant="subtle"
           />
         </template>
+
+        <template #actions-cell="{ row }">
+          <div class="flex items-center gap-2">
+            <LazyTaskFormModal
+              :key="`edit-task-${row.original.id}`"
+              :task="row.original"
+              mode="edit"
+              @task-updated="handleTaskUpdated"
+            >
+              <UButton
+                color="primary"
+                variant="ghost"
+                icon="i-heroicons-pencil-square"
+                size="sm"
+              />
+            </LazyTaskFormModal>
+            <UButton
+              color="error"
+              variant="ghost"
+              icon="i-heroicons-trash"
+              size="sm"
+              @click="handleDeleteTask(row.original)"
+            />
+          </div>
+        </template>
       </UTable>
 
       <div class="flex justify-center border-t border-(--ui-border) pt-4">
@@ -75,6 +103,33 @@
         />
       </div>
     </div>
+
+    <UModal
+      v-model:open="isDeleteModalOpen"
+      title="Delete Task"
+      :ui="{ footer: 'justify-end' }"
+    >
+      <template #body>
+        <p>
+          Are you sure you want to delete this task? This action cannot be
+          undone.
+        </p>
+      </template>
+      <template #footer>
+        <UButton
+          color="neutral"
+          variant="soft"
+          label="Cancel"
+          @click="isDeleteModalOpen = false"
+        />
+        <UButton
+          color="error"
+          variant="solid"
+          label="Delete"
+          @click="confirmDeleteTask"
+        />
+      </template>
+    </UModal>
   </UCard>
 </template>
 
@@ -89,6 +144,8 @@ const tasks = useTasksStore();
 const { dayTime } = useDayTime();
 
 const columnFilters = ref([]);
+const isDeleteModalOpen = ref(false);
+const taskToDelete = ref<Task | null>(null);
 
 const statusOptions = [
   { label: "All", value: null },
@@ -140,6 +197,11 @@ const columns: TableColumn<Task>[] = [
     header: "Created At",
     cell: ({ row }) => formatDate(row.getValue("createdAt")),
   },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: "actions-cell",
+  },
 ];
 
 const pagination = ref({
@@ -152,6 +214,38 @@ const sortedTasks = computed(() => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 });
+
+function handleTaskUpdated() {
+  isDeleteModalOpen.value = false;
+}
+
+function handleDeleteTask(task: Task) {
+  taskToDelete.value = task;
+  isDeleteModalOpen.value = true;
+}
+
+async function confirmDeleteTask() {
+  if (!taskToDelete.value) return;
+
+  try {
+    await tasks.deleteTask(taskToDelete.value.id);
+
+    const currentPage =
+      table.value?.tableApi?.getState().pagination.pageIndex || 0;
+    const totalPages = Math.ceil(
+      tasks.tasks.length / pagination.value.pageSize
+    );
+
+    if (currentPage >= totalPages && currentPage > 0) {
+      pagination.value.pageIndex = currentPage - 1;
+    }
+  } catch (error) {
+    console.error("Failed to delete task:", error);
+  } finally {
+    isDeleteModalOpen.value = false;
+    taskToDelete.value = null;
+  }
+}
 
 function getStatusColor(
   status: Task["status"]

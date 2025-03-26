@@ -1,46 +1,17 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import type { Task, TaskStatus, TaskPriority } from "~/types/task";
-
-const mockTasks: Task[] = Array.from({ length: 50 }, (_, index) => {
-  const statuses: TaskStatus[] = [
-    "todo",
-    "in-progress",
-    "completed",
-    "cancelled",
-  ];
-  const priorities: TaskPriority[] = ["low", "medium", "high"];
-  const users = ["John Doe", "Jane Smith", "Bob Johnson", "Alice Brown"];
-
-  const createdAt = new Date();
-  createdAt.setDate(createdAt.getDate() - Math.floor(Math.random() * 30));
-
-  const dueDate = new Date();
-  dueDate.setDate(dueDate.getDate() + Math.floor(Math.random() * 14));
-
-  return {
-    id: `task-${index + 1}`,
-    title: `Task ${index + 1}`,
-    description: `This is a description for task ${index + 1}. It contains some details about what needs to be done.`,
-    status: statuses[Math.floor(Math.random() * statuses.length)] as TaskStatus,
-    priority: priorities[
-      Math.floor(Math.random() * priorities.length)
-    ] as TaskPriority,
-    dueDate: dueDate.toISOString(),
-    createdAt: createdAt.toISOString(),
-    assignedTo: users[Math.floor(Math.random() * users.length)] as string,
-    updatedAt: new Date().toISOString(),
-  };
-});
+import type { Task } from "~/types/task";
 
 export const useTasksStore = defineStore("tasks", () => {
-  const tasks = ref<Task[]>(mockTasks);
+  const tasks = ref<Task[]>([]);
   const page = ref(1);
   const itemsPerPage = ref(10);
   const sortBy = ref<{ column: keyof Task; desc: boolean }>({
     column: "createdAt",
     desc: true,
   });
+  const isLoading = ref(false);
+  const error = ref<string | null>(null);
 
   const totalPages = computed(() =>
     Math.ceil(tasks.value.length / itemsPerPage.value)
@@ -85,6 +56,96 @@ export const useTasksStore = defineStore("tasks", () => {
     }).length;
   });
 
+  async function fetchTasks() {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      const response = await $fetch<Task[]>("/api/tasks");
+      tasks.value = response;
+    } catch (e) {
+      error.value = "Failed to fetch tasks";
+      console.error("Error fetching tasks:", e);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function addTask(task: Omit<Task, "id" | "createdAt" | "updatedAt">) {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      const newTask = await $fetch<Task>("/api/tasks", {
+        method: "POST",
+        body: task,
+      });
+      tasks.value.unshift(newTask);
+    } catch (e) {
+      error.value = "Failed to create task";
+      console.error("Error creating task:", e);
+      throw e;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function updateTask(task: Task) {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      const updatedTask = await $fetch<Task>("/api/tasks", {
+        method: "PATCH",
+        body: task,
+      });
+
+      // Update the task in the local array
+      const taskIndex = tasks.value.findIndex((t) => t.id === updatedTask.id);
+      if (taskIndex !== -1) {
+        tasks.value[taskIndex] = updatedTask;
+      }
+
+      return updatedTask;
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to update task";
+      error.value = errorMessage;
+      throw err;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function deleteTask(taskId: string) {
+    error.value = null;
+
+    // Find the task and its index
+    const taskIndex = tasks.value.findIndex((t) => t.id === taskId);
+    if (taskIndex === -1) {
+      error.value = "Task not found";
+      return;
+    }
+
+    // Store the task and remove it immediately (optimistic)
+    const deletedTask = tasks.value[taskIndex];
+    tasks.value = tasks.value.filter((t) => t.id !== taskId);
+
+    try {
+      await $fetch(`/api/tasks/${taskId}`, {
+        method: "delete",
+      });
+    } catch (err) {
+      // Rollback on error - we know deletedTask exists since we found it earlier
+      tasks.value = [
+        ...tasks.value.slice(0, taskIndex),
+        deletedTask as Task,
+        ...tasks.value.slice(taskIndex),
+      ];
+      error.value =
+        err instanceof Error ? err.message : "Failed to delete task";
+      throw error.value;
+    }
+  }
+
   function updatePage(newPage: number) {
     page.value = newPage;
   }
@@ -102,24 +163,27 @@ export const useTasksStore = defineStore("tasks", () => {
     page.value = 1;
   }
 
-  function addTask(task: Task) {
-    tasks.value.unshift(task);
-  }
+  fetchTasks();
 
   return {
     tasks,
     page,
     itemsPerPage,
     sortBy,
+    isLoading,
+    error,
     totalPages,
     paginatedTasks,
-    updatePage,
-    updateSort,
-    updateItemsPerPage,
-    addTask,
     totalTasks,
     inProgressTasks,
     completedTasks,
     overdueTasks,
+    fetchTasks,
+    addTask,
+    updateTask,
+    deleteTask,
+    updatePage,
+    updateSort,
+    updateItemsPerPage,
   };
 });

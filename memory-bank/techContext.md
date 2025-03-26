@@ -8,76 +8,115 @@
    - Nuxt UI
    - Vue 3 Composition API
    - TypeScript
+   - Pinia for state management
 
 2. Authentication
 
-   - Google OAuth
-   - Firebase/Supabase (optional)
+   - Firebase Authentication
+   - Google OAuth provider
+   - Firebase Admin SDK
 
 3. State Management
 
-   - Nuxt useState()
-   - Pinia (optional)
+   - Pinia stores
+   - Vue 3 Composition API
+   - Computed properties
+   - Reactive references
 
-4. Data Visualization
-   - Charts library (to be selected)
+4. Form Handling
+   - Zod validation
+   - Nuxt UI form components
+   - Type-safe schemas
 
 ## Development Setup
 
 1. Project Structure
 
-   - Nuxt 3 standard directory structure
-   - Component organization
-   - API routes in server/api/
-   - Type definitions
+   - Nuxt 3 directory structure
+   - Components in app/components
+   - Stores in app/stores
+   - Types in types/ directory
+   - Composables in composables/
 
 2. Development Tools
 
-   - Node.js
-   - npm/yarn/pnpm
-   - VS Code (recommended)
-   - Git
+   - Node.js v18+
+   - pnpm package manager
+   - VS Code with Volar
+   - Git for version control
 
-3. Testing Tools
-   - Nuxt testing utilities
-   - Lighthouse for performance
+3. Code Quality
+   - TypeScript strict mode
+   - ESLint configuration
+   - Prettier formatting
+   - Type checking
 
-## Technical Constraints
+## Technical Implementations
 
-1. Performance Requirements
+1. Task Management
 
-   - Optimized bundle size
-   - Lazy loading
-   - Efficient caching
-   - PWA capabilities
+   - Pinia store for tasks
+   - CRUD operations
+   - Sorting and filtering
+   - Pagination
 
-2. Browser Support
+2. UI Components
 
-   - Modern browsers
-   - Mobile responsiveness
-   - PWA support
+   - Nuxt UI components
+   - Custom form modals
+   - Data tables with filters
+   - Status badges
 
-3. API Limitations
-   - Mock API implementation
-   - Rate limiting consideration
-   - Error handling requirements
+3. Type System
+   - Interface definitions
+   - Zod schemas
+   - Component props
+   - Store state types
 
 ## Dependencies
 
 1. Core Dependencies
 
-   - @nuxt/ui
-   - @nuxtjs/color-mode
-   - @pinia/nuxt (if used)
+   - @nuxt/ui: ^2.14.1
+   - @pinia/nuxt: ^0.5.1
+   - firebase: ^10.8.0
+   - firebase-admin: ^12.0.0
+   - zod: ^3.22.4
 
 2. Development Dependencies
 
-   - TypeScript
-   - ESLint
-   - Prettier
-   - Testing libraries
+   - typescript: ^5.3.3
+   - @nuxt/devtools
+   - eslint
+   - prettier
+   - nuxt-icon
 
-3. Optional Dependencies
-   - Firebase/Supabase SDK
-   - Chart libraries
-   - Drag and drop libraries
+3. UI Dependencies
+   - @heroicons/vue
+   - @nuxt/ui-pro
+   - @vueuse/core
+   - @vueuse/nuxt
+
+## Environment Setup
+
+1. Required Environment Variables
+
+   - FIREBASE_API_KEY
+   - FIREBASE_AUTH_DOMAIN
+   - FIREBASE_PROJECT_ID
+   - FIREBASE_STORAGE_BUCKET
+   - FIREBASE_MESSAGING_SENDER_ID
+   - FIREBASE_APP_ID
+
+2. Development Environment
+
+   - Node.js v18+ required
+   - pnpm as package manager
+   - .env file configuration
+   - Firebase project setup
+
+3. IDE Configuration
+   - VS Code settings
+   - Volar extension
+   - ESLint plugin
+   - Prettier plugin

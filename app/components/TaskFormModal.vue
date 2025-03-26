@@ -1,5 +1,8 @@
 <template>
-  <UModal v-model:open="isOpen" title="Add New Task">
+  <UModal
+    v-model:open="isOpen"
+    :title="mode === 'edit' ? 'Edit Task' : 'Add New Task'"
+  >
     <slot />
 
     <template #body>
@@ -55,7 +58,7 @@
           class="flex justify-end gap-2 col-span-2 border-t border-dashed border-gray-200 pt-4"
         >
           <UButton
-            color="gray"
+            color="neutral"
             variant="soft"
             label="Cancel"
             type="button"
@@ -63,7 +66,7 @@
           />
           <UButton
             color="primary"
-            label="Create Task"
+            :label="mode === 'edit' ? 'Update Task' : 'Create Task'"
             type="submit"
             :loading="isSubmitting"
           />
@@ -78,14 +81,22 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import { useTasksStore } from "~/stores/tasks";
 import type { Task } from "~/types/task";
 import { z } from "zod";
+import { useDayTime } from "~/composables/useDayTime";
+
+const props = defineProps<{
+  task?: Task;
+  mode?: "create" | "edit";
+}>();
 
 const emit = defineEmits<{
   "task-created": [];
+  "task-updated": [];
 }>();
 
 const isOpen = ref(false);
 const isSubmitting = ref(false);
 const tasks = useTasksStore();
+const { dayTime } = useDayTime();
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -101,13 +112,29 @@ type FormSchema = z.output<typeof formSchema>;
 const INITIAL_FORM_STATE = {
   title: "",
   description: "",
-  status: "todo",
-  priority: "medium",
+  status: "todo" as const,
+  priority: "medium" as const,
   assignedTo: "",
   dueDate: "",
-} as const;
+};
 
-const formState = reactive({ ...INITIAL_FORM_STATE });
+type FormState = {
+  title: string;
+  description: string;
+  status: Task["status"];
+  priority: Task["priority"];
+  assignedTo: string;
+  dueDate: string;
+};
+
+const formState = reactive<FormState>(
+  props.task
+    ? {
+        ...props.task,
+        dueDate: dayTime(props.task.dueDate).format("YYYY-MM-DD"),
+      }
+    : { ...INITIAL_FORM_STATE }
+);
 
 async function onSubmit(event: FormSubmitEvent<FormSchema>) {
   event.preventDefault();
@@ -116,22 +143,45 @@ async function onSubmit(event: FormSubmitEvent<FormSchema>) {
     const validatedData = formSchema.parse(formState);
     isSubmitting.value = true;
 
-    const newTask: Task = {
-      id: `task-${tasks.tasks.length + 1}`,
-      ...validatedData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    // Convert date string to ISO format
+    const dateWithTime = new Date(validatedData.dueDate);
+    dateWithTime.setHours(23, 59, 59, 999); // Set to end of day
+    const dueDateISO = dateWithTime.toISOString();
 
-    tasks.addTask(newTask);
+    if (props.mode === "edit" && props.task) {
+      // Update existing task
+      const updatedTask = {
+        ...props.task,
+        ...validatedData,
+        dueDate: dueDateISO,
+        description: validatedData.description || "",
+        updatedAt: new Date().toISOString(),
+      };
+      await tasks.updateTask(updatedTask);
+      emit("task-updated");
+    } else {
+      // Create new task
+      const newTask: Task = {
+        id: `task-${tasks.tasks.length + 1}`,
+        ...validatedData,
+        dueDate: dueDateISO,
+        description: validatedData.description || "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      await tasks.addTask(newTask);
+      emit("task-created");
+    }
 
-    Object.keys(formState).forEach((key) => {
-      formState[key as keyof typeof formState] =
-        INITIAL_FORM_STATE[key as keyof typeof INITIAL_FORM_STATE];
-    });
+    // Reset form state only for create mode
+    if (props.mode !== "edit") {
+      Object.keys(formState).forEach((key) => {
+        const k = key as keyof FormState;
+        formState[k] = INITIAL_FORM_STATE[k];
+      });
+    }
 
     isOpen.value = false;
-    emit("task-created");
   } catch (error) {
     if (error instanceof z.ZodError) {
       error.errors.forEach((err) => {
