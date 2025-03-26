@@ -24,8 +24,8 @@
    - [x] Dynamic card-based UI
    - [x] Welcome message with time
    - [x] Data table with pagination
-   - [ ] Form with validation
-   - [ ] Basic CRUD operations
+   - [x] Form with validation
+   - [x] Basic CRUD operations
 
    Advanced Requirements:
 

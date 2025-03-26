@@ -10,9 +10,35 @@
     </template>
 
     <div class="space-y-4">
+      <div class="flex items-center gap-4 pb-4">
+        <UInput
+          :model-value="
+            table?.tableApi?.getColumn('title')?.getFilterValue() as string
+          "
+          class="max-w-sm"
+          icon="i-heroicons-magnifying-glass"
+          placeholder="Search tasks..."
+          @update:model-value="
+            table?.tableApi?.getColumn('title')?.setFilterValue($event)
+          "
+        />
+        <USelect
+          :model-value="
+            table?.tableApi?.getColumn('status')?.getFilterValue() as string
+          "
+          class="w-40"
+          placeholder="Filter by status"
+          :items="statusOptions"
+          @update:model-value="
+            table?.tableApi?.getColumn('status')?.setFilterValue($event)
+          "
+        />
+      </div>
+
       <UTable
         ref="table"
         v-model:pagination="pagination"
+        v-model:column-filters="columnFilters"
         :data="sortedTasks"
         :columns="columns"
         :pagination-options="{
@@ -62,6 +88,16 @@ const table = useTemplateRef("table");
 const tasks = useTasksStore();
 const { dayTime } = useDayTime();
 
+const columnFilters = ref([]);
+
+const statusOptions = [
+  { label: "All", value: null },
+  { label: "To Do", value: "todo" },
+  { label: "In Progress", value: "in-progress" },
+  { label: "Completed", value: "completed" },
+  { label: "Cancelled", value: "cancelled" },
+];
+
 const columns: TableColumn<Task>[] = [
   {
     accessorKey: "id",
@@ -71,11 +107,19 @@ const columns: TableColumn<Task>[] = [
   {
     accessorKey: "title",
     header: "Title",
+    filterFn: (row, columnId, filterValue) => {
+      const title = row.getValue(columnId) as string;
+      return title.toLowerCase().includes(filterValue.toLowerCase());
+    },
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: "status-cell",
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      return row.getValue(columnId) === filterValue;
+    },
   },
   {
     accessorKey: "priority",
@@ -109,8 +153,26 @@ const sortedTasks = computed(() => {
   });
 });
 
-function getStatusColor(status: Task["status"]): string {
-  const colors: Record<Task["status"], string> = {
+function getStatusColor(
+  status: Task["status"]
+):
+  | "error"
+  | "primary"
+  | "neutral"
+  | "secondary"
+  | "success"
+  | "info"
+  | "warning" {
+  const colors: Record<
+    Task["status"],
+    | "error"
+    | "primary"
+    | "neutral"
+    | "secondary"
+    | "success"
+    | "info"
+    | "warning"
+  > = {
     todo: "neutral",
     "in-progress": "info",
     completed: "success",
@@ -119,8 +181,26 @@ function getStatusColor(status: Task["status"]): string {
   return colors[status];
 }
 
-function getPriorityColor(priority: Task["priority"]): string {
-  const colors: Record<Task["priority"], string> = {
+function getPriorityColor(
+  priority: Task["priority"]
+):
+  | "error"
+  | "primary"
+  | "neutral"
+  | "secondary"
+  | "success"
+  | "info"
+  | "warning" {
+  const colors: Record<
+    Task["priority"],
+    | "error"
+    | "primary"
+    | "neutral"
+    | "secondary"
+    | "success"
+    | "info"
+    | "warning"
+  > = {
     low: "success",
     medium: "warning",
     high: "error",
