@@ -141,13 +141,11 @@ async function onSubmit(event: FormSubmitEvent<FormSchema>) {
     const validatedData = formSchema.parse(formState);
     isSubmitting.value = true;
 
-    // Convert date string to ISO format
     const dateWithTime = new Date(validatedData.dueDate);
-    dateWithTime.setHours(23, 59, 59, 999); // Set to end of day
+    dateWithTime.setHours(23, 59, 59, 999);
     const dueDateISO = dateWithTime.toISOString();
 
     if (props.mode === "edit" && props.task) {
-      // Update existing task
       const updatedTask = {
         ...props.task,
         ...validatedData,
@@ -158,7 +156,6 @@ async function onSubmit(event: FormSubmitEvent<FormSchema>) {
       await tasks.updateTask(updatedTask);
       emit("task-updated");
     } else {
-      // For new tasks, we don't need to provide createdBy as it will be set by the server
       await tasks.addTask({
         ...validatedData,
         dueDate: dueDateISO,

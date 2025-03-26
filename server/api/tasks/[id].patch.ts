@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Verify task ownership
     if (tasks[taskIndex].createdBy !== userEmail) {
       throw createError({
         statusCode: 403,
@@ -34,8 +33,8 @@ export default defineEventHandler(async (event) => {
     const updatedTask: Task = {
       ...tasks[taskIndex],
       ...body,
-      id, // Ensure we keep the original ID
-      createdBy: userEmail, // Ensure we keep the original creator
+      id,
+      createdBy: userEmail,
       updatedAt: new Date().toISOString(),
     };
 

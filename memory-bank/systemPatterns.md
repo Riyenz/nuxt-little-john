@@ -19,6 +19,8 @@
 - User-specific data filtering by createdBy email
 - Automatic task refresh on user changes
 - Task clearing on user logout
+- Read-only profile picture handling
+- User-specific data filtering
 
 ## Data Models
 
@@ -28,13 +30,21 @@
 interface Task {
   id: string;
   title: string;
-  description: string;
-  status: "todo" | "in-progress" | "completed" | "cancelled";
-  priority: "low" | "medium" | "high";
+  description?: string;
+  completed: boolean;
   dueDate: string;
   createdAt: string;
-  updatedAt: string;
-  createdBy: string; // User's email for data filtering
+  createdBy: string;
+}
+```
+
+### User Profile
+
+```typescript
+interface UserProfile {
+  displayName: string;
+  email: string; // read-only
+  photoURL: string;
 }
 ```
 
@@ -45,13 +55,16 @@ interface Task {
 - Optimistic updates for better UX
 - Centralized error handling
 - Toast notifications for user feedback
+- Dark mode preference persistence
 
 ## Component Architecture
 
-- Reusable UI components
+- Reusable UI components from Nuxt UI
 - Form validation with Zod
 - Composables for shared logic
 - Lazy loading for better performance
+- Consistent layout system
+- Responsive design patterns
 
 ## Security Patterns
 
@@ -61,12 +74,15 @@ interface Task {
 - Session management with inactivity detection
 - Token refresh on each API call
 - User state management for data access
+- Read-only fields for sensitive data
 
 ## Error Handling
 
 - Consistent error response format
 - Type-safe error handling
-- Toast notifications for user feedback
+- User-friendly error messages
+- Toast notifications for feedback
+- Form validation feedback
 - Graceful fallbacks for failed operations
 
 ## Code Organization
@@ -76,6 +92,9 @@ interface Task {
 - Type safety across components
 - Centralized API handling with useApi composable
 - User-specific state management
+- Type definitions
+- Shared composables
+- Utility functions
 
 ## Architecture Overview
 

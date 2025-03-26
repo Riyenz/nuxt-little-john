@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Verify task ownership
     if (tasks[taskIndex].createdBy !== userEmail) {
       throw createError({
         statusCode: 403,

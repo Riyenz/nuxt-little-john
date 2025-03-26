@@ -166,11 +166,6 @@ const statusOptions = [
 
 const columns: TableColumn<Task>[] = [
   {
-    accessorKey: "id",
-    header: "#",
-    cell: ({ row }) => `#${row.getValue("id")}`,
-  },
-  {
     accessorKey: "title",
     header: "Title",
     filterFn: (row, columnId, filterValue) => {

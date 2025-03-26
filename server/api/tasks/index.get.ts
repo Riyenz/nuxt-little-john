@@ -36,7 +36,6 @@ export const tasks: Task[] = Array.from({ length: 50 }, (_, index) => {
 
 export default defineEventHandler(async (event) => {
   try {
-    // Get the authenticated user's email from the context
     const userEmail = event.context.auth?.email;
 
     if (!userEmail) {
@@ -46,7 +45,6 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Filter tasks to only return those created by the authenticated user
     const userTasks = tasks.filter((task) => task.createdBy === userEmail);
 
     return userTasks.sort(
