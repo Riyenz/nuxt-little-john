@@ -24,13 +24,4 @@ const { user } = useAuth();
 const { currentTime } = useDayTime();
 
 const currentDate = currentTime("dddd, MMMM D h:mm A");
-
-const dashboardData = reactive({
-  totalTasks: 48,
-  taskIncrease: 12,
-  inProgress: 15,
-  completedToday: 8,
-  completionRate: 85,
-  overdueTasks: 3,
-});
 </script>
