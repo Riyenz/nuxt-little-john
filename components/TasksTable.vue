@@ -90,6 +90,15 @@
             />
           </div>
         </template>
+
+        <template #empty>
+          <div class="flex flex-col-reverse items-center justify-center gap-4">
+            <p class="font-semibold">No tasks found</p>
+            <LazyTaskFormModal key="create-task">
+              <UButton icon="i-heroicons-plus" label="Create My First Task" />
+            </LazyTaskFormModal>
+          </div>
+        </template>
       </UTable>
 
       <div class="flex justify-center border-t border-(--ui-border) pt-4">
@@ -136,8 +145,8 @@
 <script setup lang="ts">
 import { getPaginationRowModel } from "@tanstack/vue-table";
 import type { TableColumn } from "@nuxt/ui";
-import { useTasksStore } from "~/stores/tasks";
-import type { Task } from "~/types/task";
+import { useTasksStore } from "~~/stores/tasks";
+import type { Task } from "~~/types/task";
 
 const table = useTemplateRef("table");
 const tasks = useTasksStore();
@@ -182,10 +191,6 @@ const columns: TableColumn<Task>[] = [
     accessorKey: "priority",
     header: "Priority",
     cell: "priority-cell",
-  },
-  {
-    accessorKey: "assignedTo",
-    header: "Assigned To",
   },
   {
     accessorKey: "dueDate",

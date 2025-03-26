@@ -44,31 +44,6 @@ const menuItems = [
       to: "/",
     },
     {
-      label: "Tasks",
-      icon: "i-heroicons-clipboard-document-list",
-      to: "/tasks",
-      children: [
-        {
-          label: "All Tasks",
-          description: "View all your tasks",
-          icon: "i-heroicons-list-bullet",
-          to: "/tasks",
-        },
-        {
-          label: "In Progress",
-          description: "Tasks currently being worked on",
-          icon: "i-heroicons-clock",
-          to: "/tasks?status=in-progress",
-        },
-        {
-          label: "Completed",
-          description: "View completed tasks",
-          icon: "i-heroicons-check-circle",
-          to: "/tasks?status=completed",
-        },
-      ],
-    },
-    {
       label: "Analytics",
       icon: "i-heroicons-chart-bar",
       to: "/analytics",

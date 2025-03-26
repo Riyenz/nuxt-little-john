@@ -9,6 +9,6 @@ export interface Task {
   priority: TaskPriority;
   dueDate: string;
   createdAt: string;
-  assignedTo: string;
   updatedAt: string;
+  createdBy: string; // user email
 }

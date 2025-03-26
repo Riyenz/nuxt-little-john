@@ -55,16 +55,15 @@ The application will be available at `http://localhost:3000`
 
 ```
 nuxt-little-john/
-├── app/
-│   ├── components/        # Reusable Vue components
-│   ├── composables/       # Shared composable functions
-│   ├── layouts/          # Page layouts
-│   ├── middleware/       # Route middleware
-│   ├── pages/           # Application pages/routes
-│   ├── stores/          # Pinia stores
-│   └── types/           # TypeScript type definitions
-├── public/              # Static assets
-└── memory-bank/         # Project documentation
+├── components/        # Reusable Vue components
+├── composables/      # Shared composable functions
+├── layouts/          # Page layouts
+├── middleware/       # Route middleware
+├── pages/           # Application pages/routes
+├── stores/          # Pinia stores
+├── types/           # TypeScript type definitions
+├── public/          # Static assets
+└── memory-bank/     # Project documentation
 ```
 
 ## Key Features

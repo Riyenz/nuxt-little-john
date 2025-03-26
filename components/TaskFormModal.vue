@@ -32,6 +32,7 @@
               { label: 'Completed', value: 'completed' },
               { label: 'Cancelled', value: 'cancelled' },
             ]"
+            class="w-32"
           />
         </UFormField>
 
@@ -43,11 +44,8 @@
               { label: 'Medium', value: 'medium' },
               { label: 'High', value: 'high' },
             ]"
+            class="w-32"
           />
-        </UFormField>
-
-        <UFormField label="Assigned To" name="assignedTo">
-          <UInput v-model="formState.assignedTo" />
         </UFormField>
 
         <UFormField label="Due Date" name="dueDate">
@@ -78,10 +76,10 @@
 
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
-import { useTasksStore } from "~/stores/tasks";
-import type { Task } from "~/types/task";
+import { useTasksStore } from "~~/stores/tasks";
+import type { Task } from "~~/types/task";
 import { z } from "zod";
-import { useDayTime } from "~/composables/useDayTime";
+import { useDayTime } from "~~/composables/useDayTime";
 
 const props = defineProps<{
   task?: Task;
@@ -103,7 +101,6 @@ const formSchema = z.object({
   description: z.string().min(1, "Description is required"),
   status: z.enum(["todo", "in-progress", "completed", "cancelled"]),
   priority: z.enum(["low", "medium", "high"]),
-  assignedTo: z.string().min(1, "Assignee is required"),
   dueDate: z.string().min(1, "Due date is required"),
 });
 
@@ -114,8 +111,7 @@ const INITIAL_FORM_STATE = {
   description: "",
   status: "todo" as const,
   priority: "medium" as const,
-  assignedTo: "",
-  dueDate: "",
+  dueDate: dayTime().format("YYYY-MM-DD"),
 };
 
 type FormState = {
@@ -123,14 +119,16 @@ type FormState = {
   description: string;
   status: Task["status"];
   priority: Task["priority"];
-  assignedTo: string;
   dueDate: string;
 };
 
 const formState = reactive<FormState>(
   props.task
     ? {
-        ...props.task,
+        title: props.task.title,
+        description: props.task.description,
+        status: props.task.status,
+        priority: props.task.priority,
         dueDate: dayTime(props.task.dueDate).format("YYYY-MM-DD"),
       }
     : { ...INITIAL_FORM_STATE }
@@ -160,25 +158,17 @@ async function onSubmit(event: FormSubmitEvent<FormSchema>) {
       await tasks.updateTask(updatedTask);
       emit("task-updated");
     } else {
-      // Create new task
-      const newTask: Task = {
-        id: `task-${tasks.tasks.length + 1}`,
+      // For new tasks, we don't need to provide createdBy as it will be set by the server
+      await tasks.addTask({
         ...validatedData,
         dueDate: dueDateISO,
         description: validatedData.description || "",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      await tasks.addTask(newTask);
+      } as Task);
       emit("task-created");
     }
 
-    // Reset form state only for create mode
     if (props.mode !== "edit") {
-      Object.keys(formState).forEach((key) => {
-        const k = key as keyof FormState;
-        formState[k] = INITIAL_FORM_STATE[k];
-      });
+      Object.assign(formState, INITIAL_FORM_STATE);
     }
 
     isOpen.value = false;

@@ -1,5 +1,82 @@
 # System Patterns
 
+## API Structure
+
+### Task Management
+
+- RESTful endpoints in `/api/tasks` folder:
+  - GET `/api/tasks` - List authenticated user's tasks
+  - POST `/api/tasks` - Create new task for authenticated user
+  - PATCH `/api/tasks/[id]` - Update authenticated user's task
+  - DELETE `/api/tasks/[id]` - Delete authenticated user's task
+
+### Authentication & Security
+
+- Firebase authentication for user management
+- Auth middleware for API endpoint protection
+- User session management with auto-logout
+- Token refresh handling in useApi composable
+- User-specific data filtering by createdBy email
+- Automatic task refresh on user changes
+- Task clearing on user logout
+
+## Data Models
+
+### Task Model
+
+```typescript
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: "todo" | "in-progress" | "completed" | "cancelled";
+  priority: "low" | "medium" | "high";
+  dueDate: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string; // User's email for data filtering
+}
+```
+
+## State Management
+
+- Pinia store for task management
+- User state watching for data refresh
+- Optimistic updates for better UX
+- Centralized error handling
+- Toast notifications for user feedback
+
+## Component Architecture
+
+- Reusable UI components
+- Form validation with Zod
+- Composables for shared logic
+- Lazy loading for better performance
+
+## Security Patterns
+
+- Firebase Admin SDK for backend authentication
+- User-specific data filtering
+- API endpoint protection
+- Session management with inactivity detection
+- Token refresh on each API call
+- User state management for data access
+
+## Error Handling
+
+- Consistent error response format
+- Type-safe error handling
+- Toast notifications for user feedback
+- Graceful fallbacks for failed operations
+
+## Code Organization
+
+- Feature-based directory structure
+- Clear separation of concerns
+- Type safety across components
+- Centralized API handling with useApi composable
+- User-specific state management
+
 ## Architecture Overview
 
 1. Frontend Framework

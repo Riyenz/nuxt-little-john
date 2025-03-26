@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import { getCurrentUser } from "vuefire";
+import { ref, computed, watch } from "vue";
 import type { Task } from "~/types/task";
 
 export const useTasksStore = defineStore("tasks", () => {
@@ -14,6 +13,7 @@ export const useTasksStore = defineStore("tasks", () => {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
   const toast = useToast();
+  const { user } = useAuth();
 
   const totalPages = computed(() =>
     Math.ceil(tasks.value.length / itemsPerPage.value)
@@ -58,28 +58,11 @@ export const useTasksStore = defineStore("tasks", () => {
     }).length;
   });
 
-  async function getAuthHeaders() {
-    const user = await getCurrentUser();
-    if (!user) {
-      throw createError({
-        statusCode: 401,
-        message: "User not authenticated",
-      });
-    }
-    const token = await user.getIdToken();
-    return {
-      Authorization: `Bearer ${token}`,
-    };
-  }
-
   async function fetchTasks() {
     isLoading.value = true;
     error.value = null;
     try {
-      const headers = await getAuthHeaders();
-      const response = await $fetch<Task[]>("/api/tasks", {
-        headers,
-      });
+      const response = await useApi<Task[]>("/api/tasks");
       tasks.value = response;
     } catch (e) {
       error.value = "Failed to fetch tasks";
@@ -98,11 +81,9 @@ export const useTasksStore = defineStore("tasks", () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const headers = await getAuthHeaders();
-      const newTask = await $fetch<Task>("/api/tasks", {
-        method: "POST",
+      const newTask = await useApi<Task>("/api/tasks", {
+        method: "post",
         body: task,
-        headers,
       });
       tasks.value.unshift(newTask);
       toast.add({
@@ -129,11 +110,9 @@ export const useTasksStore = defineStore("tasks", () => {
     error.value = null;
 
     try {
-      const headers = await getAuthHeaders();
-      const updatedTask = await $fetch<Task>("/api/tasks", {
-        method: "PATCH",
+      const updatedTask = await useApi<Task>(`/api/tasks/${task.id}`, {
+        method: "patch",
         body: task,
-        headers,
       });
 
       const taskIndex = tasks.value.findIndex((t) => t.id === updatedTask.id);
@@ -183,10 +162,8 @@ export const useTasksStore = defineStore("tasks", () => {
     tasks.value = tasks.value.filter((t) => t.id !== taskId);
 
     try {
-      const headers = await getAuthHeaders();
-      await $fetch(`/api/tasks/${taskId}`, {
-        method: "DELETE",
-        headers,
+      await useApi(`/api/tasks/${taskId}`, {
+        method: "delete",
       });
       toast.add({
         title: "Task Deleted",
@@ -227,7 +204,17 @@ export const useTasksStore = defineStore("tasks", () => {
     page.value = 1;
   }
 
-  fetchTasks();
+  watch(
+    user,
+    () => {
+      if (user.value) {
+        fetchTasks();
+      } else {
+        tasks.value = [];
+      }
+    },
+    { immediate: true }
+  );
 
   return {
     tasks,

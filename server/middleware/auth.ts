@@ -1,8 +1,11 @@
 import { getAuth } from "firebase-admin/auth";
 import { H3Event } from "h3";
+import { initializeFirebaseAdmin } from "../utils/firebase-admin";
 
 export default defineEventHandler(async (event: H3Event) => {
-  if (!event.path.includes("/api") || event.path.includes("/api/auth")) {
+  initializeFirebaseAdmin();
+
+  if (!event.path.startsWith("/api") || event.path.includes("/api/auth")) {
     return;
   }
 
@@ -19,13 +22,13 @@ export default defineEventHandler(async (event: H3Event) => {
     if (!token) {
       throw createError({
         statusCode: 401,
-        message: "Unauthorized: Invalid token format",
+        message: "Unauthorized: Invalid token format [001]",
       });
     }
 
     try {
       const decodedToken = await getAuth().verifyIdToken(token);
-      // Add user info to the event context for use in route handlers
+
       event.context.auth = {
         uid: decodedToken.uid,
         email: decodedToken.email,
@@ -33,7 +36,7 @@ export default defineEventHandler(async (event: H3Event) => {
     } catch (error) {
       throw createError({
         statusCode: 401,
-        message: "Unauthorized: Invalid token",
+        message: "Unauthorized: Invalid token [002]",
       });
     }
   } catch (error: any) {

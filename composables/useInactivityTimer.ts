@@ -1,10 +1,15 @@
 import { ref, onMounted, onUnmounted } from "vue";
 
-export function useInactivityTimer(timeoutMinutes = 30) {
+interface UseInactivityTimerOptions {
+  timeoutMinutes?: number;
+  warningMinutes?: number;
+}
+
+export function useInactivityTimer(options: UseInactivityTimerOptions = {}) {
+  const { timeoutMinutes = 10, warningMinutes = 5 } = options;
   const toast = useToast();
   let inactivityTimeout: NodeJS.Timeout;
   let warningTimeout: NodeJS.Timeout;
-  const WARNING_BEFORE_TIMEOUT = 5; // Show warning 5 minutes before timeout
   const isWarningShown = ref(false);
 
   function resetTimer() {
@@ -15,16 +20,15 @@ export function useInactivityTimer(timeoutMinutes = 30) {
     clearTimeout(inactivityTimeout);
     clearTimeout(warningTimeout);
 
-    // Set warning timeout (5 minutes before inactivity timeout)
     warningTimeout = setTimeout(
       () => {
         isWarningShown.value = true;
         toast.add({
           id: "inactivity-warning",
           title: "Inactivity Warning",
-          description: `You have been inactive for ${timeoutMinutes - WARNING_BEFORE_TIMEOUT} minutes. You will be logged out in ${WARNING_BEFORE_TIMEOUT} minutes.`,
+          description: `You have been inactive for ${timeoutMinutes - warningMinutes} minutes. You will be logged out in ${warningMinutes} minutes.`,
           color: "warning",
-          duration: WARNING_BEFORE_TIMEOUT * 60 * 1000, // Convert to milliseconds
+          duration: warningMinutes * 60 * 1000,
           actions: [
             {
               label: "Stay Logged In",
@@ -35,7 +39,6 @@ export function useInactivityTimer(timeoutMinutes = 30) {
             {
               label: "Logout Now",
               onClick: () => {
-                // Call your logout function here
                 const auth = useAuth();
                 auth.logout();
               },
@@ -43,10 +46,9 @@ export function useInactivityTimer(timeoutMinutes = 30) {
           ],
         });
       },
-      (timeoutMinutes - WARNING_BEFORE_TIMEOUT) * 60 * 1000
+      (timeoutMinutes - warningMinutes) * 60 * 1000
     );
 
-    // Set inactivity timeout
     inactivityTimeout = setTimeout(
       () => {
         if (!isWarningShown.value) {
@@ -58,7 +60,7 @@ export function useInactivityTimer(timeoutMinutes = 30) {
             duration: 5000,
           });
         }
-        // Call your logout function here
+
         const auth = useAuth();
         auth.logout();
       },
@@ -81,10 +83,8 @@ export function useInactivityTimer(timeoutMinutes = 30) {
       window.addEventListener(event, resetTimer, { passive: true });
     });
 
-    // Initial timer setup
     resetTimer();
 
-    // Cleanup function
     return () => {
       events.forEach((event) => {
         window.removeEventListener(event, resetTimer);

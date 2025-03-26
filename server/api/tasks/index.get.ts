@@ -1,10 +1,15 @@
-import type { Task } from "~/types/task";
+import type { Task } from "~~/types/task";
 
 // In-memory storage for tasks (simulating a database)
 export const tasks: Task[] = Array.from({ length: 50 }, (_, index) => {
   const statuses = ["todo", "in-progress", "completed", "cancelled"];
   const priorities = ["low", "medium", "high"];
-  const users = ["John Doe", "Jane Smith", "Bob Johnson", "Alice Brown"];
+  const emails = [
+    "john@example.com",
+    "jane@example.com",
+    "bob@example.com",
+    "alice@example.com",
+  ];
 
   const createdAt = new Date();
   createdAt.setDate(createdAt.getDate() - Math.floor(Math.random() * 30));
@@ -24,14 +29,27 @@ export const tasks: Task[] = Array.from({ length: 50 }, (_, index) => {
     ] as Task["priority"],
     dueDate: dueDate.toISOString(),
     createdAt: createdAt.toISOString(),
-    assignedTo: users[Math.floor(Math.random() * users.length)],
+    createdBy: emails[Math.floor(Math.random() * emails.length)],
     updatedAt: new Date().toISOString(),
   };
 });
 
 export default defineEventHandler(async (event) => {
   try {
-    return tasks.sort(
+    // Get the authenticated user's email from the context
+    const userEmail = event.context.auth?.email;
+
+    if (!userEmail) {
+      throw createError({
+        statusCode: 401,
+        message: "Unauthorized: User email not found",
+      });
+    }
+
+    // Filter tasks to only return those created by the authenticated user
+    const userTasks = tasks.filter((task) => task.createdBy === userEmail);
+
+    return userTasks.sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );

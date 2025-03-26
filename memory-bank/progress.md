@@ -1,129 +1,169 @@
 # Progress Tracking
 
-## What Works
+## Feature Progress
 
-1. Authentication
-   Basic Requirements:
+### 1. Authentication
 
-   - [x] Google OAuth login/logout implementation (using Firebase)
-   - [x] Secure user session storage (using Firebase Auth)
-   - [x] Authentication redirects
-   - [x] User profile display in header
+Default Requirements:
 
-   Advanced Requirements:
+- [x] Google OAuth login/logout using Firebase
+- [x] Store user session using Pinia
+- [x] Redirect unauthenticated users to login
+- [x] Display user profile picture and name in header
 
-   - [ ] Auto-refresh tokens
-   - [ ] Multi-device logout
-   - [ ] User-specific data security
-   - [ ] Two-factor authentication (2FA)
+Advanced Requirements:
 
-2. Dashboard
-   Basic Requirements:
+- [ ] Auto-refresh tokens
+- [ ] Multi-device logout
+- [x] Secure API endpoints for user-specific data
+- [ ] Two-factor authentication (2FA)
 
-   - [x] Sidebar navigation
-   - [x] Dynamic card-based UI
-   - [x] Welcome message with time
-   - [x] Data table with pagination
-   - [x] Form with validation
-   - [x] Basic CRUD operations
+### 2. Dashboard Page
 
-   Advanced Requirements:
+Default Requirements:
 
-   - [x] Search and filter functionality
-   - [ ] Inline editing in tables
-   - [ ] Drag-and-drop task sorting
-   - [ ] Role-based access control
-   - [ ] Customizable dashboard layout
+- [x] Sidebar navigation (Dashboard, Tasks, Analytics, Settings, Logout)
+- [x] Dynamic card-based UI using Nuxt UI
+- [x] Welcome message with user's name and time of day
+- [x] Data table with pagination
+- [x] Form with validation using Nuxt UI Form
+- [x] CRUD functionality for tasks
 
-3. Analytics (Not Started)
-   Basic Requirements:
+Advanced Requirements:
 
-   - [ ] Bar chart for completed tasks
-   - [ ] Pie chart for task status
-   - [ ] Line chart for productivity
-   - [ ] Dynamic data integration
+- [x] Search and filters on data table
+- [ ] Inline editing (double-click to edit)
+- [ ] Drag-and-drop sorting of tasks
+- [ ] Role-based access control
 
-   Advanced Requirements:
+### 3. API Handling
 
-   - [ ] Real-time chart updates
-   - [ ] Customizable chart selection
-   - [ ] Interactive data filtering
-   - [ ] Export capabilities
+Default Requirements:
 
-4. User Settings (Not Started)
-   Basic Requirements:
+- [x] Mock API using Nuxt server routes
+- [x] Fetch user-specific data using useFetch
+- [x] Error handling for failed requests
 
-   - [ ] Profile update functionality
-   - [ ] Dark mode toggle
-   - [ ] Basic UI customization
+Advanced Requirements:
 
-   Advanced Requirements:
+- [ ] Cache API responses using useAsyncData
+- [ ] Retry mechanism for failed API calls
 
-   - [ ] Theme customization
-   - [ ] Widget preferences
-   - [ ] Notification settings
-   - [ ] Security preferences
+### 4. UI & Styling
 
-5. UI/UX (In Progress)
-   Basic Requirements:
+Default Requirements:
 
-   - [ ] Responsive design implementation
-   - [ ] Dark mode support
-   - [ ] Toast notifications
-   - [ ] Alert dialogs
-   - [ ] Loading states
+- [x] Use Nuxt UI components
+- [x] Responsive design (mobile, tablet, desktop)
+- [ ] Dark mode support
+- [x] Global layout and reusable components
 
-   Advanced Requirements:
+Advanced Requirements:
 
-   - [ ] Custom theme creation
-   - [ ] Animated transitions
-   - [ ] Keyboard shortcuts
-   - [ ] Accessibility features
+- [ ] Theme customization
+- [ ] Drag-and-drop dashboard widgets
 
-6. Performance & Deployment (Not Started)
-   Basic Requirements:
+### 5. Analytics Page
 
-   - [ ] Initial deployment setup
-   - [ ] Basic lazy loading
-   - [ ] API response caching
-   - [ ] Error handling
+Default Requirements:
 
-   Advanced Requirements:
+- [ ] Bar chart for completed tasks per day
+- [ ] Pie chart for task status distribution
+- [ ] Line chart for weekly productivity
+- [ ] Dynamic data based on user input
 
-   - [ ] PWA implementation
-   - [ ] Lighthouse optimization
-   - [ ] Service worker setup
-   - [ ] Offline functionality
+Advanced Requirements:
 
-7. Voice Commands (Not Started)
-   - [ ] Voice command integration
-   - [ ] Natural language processing
-   - [ ] Command feedback system
+- [ ] Real-time data updates on charts
+- [ ] Customizable chart selection
+
+### 6. Notifications & Toast Messages
+
+Default Requirements:
+
+- [x] Toast notifications for actions
+- [x] Alert dialogs for deletions
+- [x] Inactivity notifications with logout suggestion
+
+### 7. User Settings Page
+
+Default Requirements:
+
+- [ ] Update profile (name, email, picture)
+- [ ] Toggle dark mode
+- [ ] UI customization options
+
+Advanced Requirements:
+
+- [ ] Two-factor authentication setup
+
+### 8. Deployment & Performance
+
+Default Requirements:
+
+- [x] Deploy to Vercel/Netlify/Cloudflare
+- [x] Lazy loading for components/images
+- [ ] API call caching
+
+Advanced Requirements:
+
+- [ ] PWA features (offline mode)
+- [ ] Lighthouse optimization
+
+### Bonus Features
+
+- [ ] Voice commands for task management
 
 ## Current Status
 
-🟡 Implementation Phase
+🟡 Implementation Phase (60% Complete)
 
-- Authentication system implemented
-- Dashboard core features completed including:
-  - Task management with CRUD operations
-  - Search and filter functionality
-  - Form validation
-  - Pagination
-- Working on UI/UX improvements
+### Completed Features
 
-## Known Issues
+- Authentication system with Firebase
+- Dashboard core functionality
+- Task management with CRUD operations
+- Toast notifications and alerts
+- Inactivity detection
+- Deployment setup
+- Lazy loading implementation
+- API security with user-specific data filtering
 
-1. Need to implement remaining UI/UX features (toast notifications, alert dialogs)
-2. Analytics section not started
-3. User settings section not started
-4. Performance optimizations and deployment setup pending
+### In Progress
 
-## Next Milestone
+- UI/UX improvements
+- Responsive design refinements
+- Performance optimizations
+- Dark mode implementation
 
-Complete UI/UX Implementation
+### Pending Features
 
-- Implement toast notifications for actions
-- Add alert dialogs for destructive actions
-- Complete responsive design implementation
-- Add loading states for async operations
+- Analytics implementation
+- User settings page
+- Advanced features (inline editing, drag-and-drop)
+- Voice commands
+
+## Next Steps
+
+1. Dark Mode & UI
+
+   - Implement dark mode support
+   - Add dark mode toggle in settings
+   - Test dark mode across components
+
+2. Analytics Implementation
+
+   - Set up charts library
+   - Implement basic charts
+   - Add dynamic data integration
+
+3. User Settings
+
+   - Create profile update form
+   - Add UI customization options
+   - Implement settings persistence
+
+4. Advanced Features
+   - Add inline editing
+   - Implement drag-and-drop
+   - Set up role-based access
