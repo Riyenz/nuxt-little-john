@@ -5,7 +5,11 @@ export function initializeFirebaseAdmin() {
 
   if (!apps.length) {
     initializeApp({
-      credential: cert(process.env.GOOGLE_APPLICATION_CREDENTIALS!),
+      credential: cert({
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY,
+        projectId: process.env.FIREBASE_PROJECT_ID,
+      }),
     });
   }
 
