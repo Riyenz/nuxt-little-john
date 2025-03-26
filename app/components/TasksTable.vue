@@ -106,7 +106,7 @@
 
     <UModal
       v-model:open="isDeleteModalOpen"
-      title="Delete Task"
+      :title="`Delete Task: ${taskToDelete?.title}`"
       :ui="{ footer: 'justify-end' }"
     >
       <template #body>

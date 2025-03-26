@@ -12,20 +12,23 @@ Task Management System Enhancement Phase
 - Improved type safety across components
 - Added optimistic updates for better UX
 - Implemented error handling and state management
+- Added toast notifications for all task operations
+- Implemented user inactivity detection with warning and auto-logout
 
 ## Next Steps
 
 1. Error Handling & Notifications
 
-   - Implement toast notifications for CRUD operations
    - Add error boundaries
    - Enhance error messages and feedback
+   - Add loading states for async operations
 
 2. Testing & Documentation
 
    - Add unit tests for CRUD operations
    - Document API integration patterns
    - Update component documentation
+   - Test inactivity timer edge cases
 
 3. Performance Optimization
    - Implement request caching
@@ -44,9 +47,9 @@ Task Management System Enhancement Phase
    - Decision needed: Testing library selection
    - Consider: Component testing, API mocking, coverage goals
 
-3. Caching Implementation
-   - Decision needed: SWR vs custom caching
-   - Consider: Data freshness, complexity, maintenance
+3. Session Management
+   - Decision needed: Inactivity timeout duration configuration
+   - Consider: User preferences, security requirements, UX impact
 
 ## Current Considerations
 
@@ -63,9 +66,12 @@ Task Management System Enhancement Phase
    - Error feedback
    - Form validation
    - Confirmation flows
+   - Toast notification patterns
+   - Session timeout warnings
 
 3. Code Quality
    - Type safety
    - Component composition
    - State management patterns
    - Testing strategy
+   - Security best practices

@@ -18,7 +18,11 @@
 </template>
 
 <script setup lang="ts">
+import { useInactivityTimer } from "../composables/useInactivityTimer";
+
 const navigation = useNavigationStore();
+
+useInactivityTimer({ timeoutMinutes: 5, warningMinutes: 3 });
 </script>
 
 <style scoped>
