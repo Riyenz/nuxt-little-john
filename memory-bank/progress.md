@@ -11,7 +11,7 @@
 
 Advanced Requirements:
 
-- [x] Implement auto-refresh tokens
+- [ ] Implement auto-refresh tokens
 - [x] Allow users to log out
 - [x] Secure API endpoints to return only authenticated user-specific data
 
@@ -56,11 +56,11 @@ Advanced Requirements:
 
 ### 5. Analytics Page
 
-- [ ] Create Analytics page with charts library
-- [ ] Include bar chart for completed tasks per day
-- [ ] Include pie chart for task status distribution
-- [ ] Include line chart for weekly productivity
-- [ ] Make data dynamic based on user input
+- [x] Create Analytics page with charts library
+- [x] Include bar chart for completed tasks per day
+- [x] Include pie chart for task status distribution
+- [x] Include line chart for weekly productivity
+- [x] Make data dynamic based on user input
 
 Advanced Requirements:
 
@@ -120,3 +120,7 @@ Advanced Requirements:
 4. Security Enhancements
    - Add two-factor authentication
    - Implement role-based access
+
+## Known Issues
+
+- None currently reported

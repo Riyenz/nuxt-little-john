@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-3xl mx-auto space-y-6">
+  <div class="space-y-6">
     <UCard>
       <template #header>
         <h2 class="text-xl font-semibold">Profile Settings</h2>
